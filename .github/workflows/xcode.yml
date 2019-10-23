@@ -13,9 +13,12 @@ jobs:
       run: sudo xcode-select -s '/Applications/Xcode_10.1.app/Contents/Developer'
     - name: Show Xcode version
       run: xcodebuild -version
+    - name: add cert
+      run: |
+        echo ${{ secrets.IOS_DEVELOPMENT_CERT_BASE64 }} | base64 --decode > "$HOME/ios_development.cert"
+        security add-trusted-cert -d -r trustRoot -k $HOME/Library/Keychains/login.keychain $HOME/ios_development.cert
     - name: Add Provisioning Profile
       run: |
-        set -x
         mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
         echo ${{ secrets.PROVISIONING_PROFILE_APPSTORE_BASE64 }} | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/distribution.mobileprovision"
         echo ${{ secrets.PROVISIONING_PROFILE_DEVELOPMENT_BASE64 }} | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/development.mobileprovision"
