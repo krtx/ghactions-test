@@ -13,3 +13,5 @@ jobs:
       run: sudo xcode-select -s '/Applications/Xcode_10.1.app/Contents/Developer'
     - name: Show Xcode version
       run: xcodebuild -version
+    - name: Archive
+      run: xcodebuild -scheme ghactions-test -project ghactions-test.xcodeproj -archivePath ghactions-test.xcarchive archive
