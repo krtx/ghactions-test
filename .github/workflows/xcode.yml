@@ -15,22 +15,12 @@ jobs:
       run: xcodebuild -version
     - name: fastlane
       run: fastlane --version
-    - name: test
-      run: echo hoge > "$HOME/temp"
-    - name: test 2
-      run: ls "$HOME"
-    - name: test 3
-      run: |
-        mkdir -p $HOME/hoge
-        echo aaa > $HOME/hoge/fuga
-    - name: test 5
-      run: |
-        ls $HOME/hoge
-        cat $HOME/hoge/fuga
     - name: Add Provisioning Profile
       run: |
         set -x
         mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
         echo ${{ secrets.PROVISIONING_PROFILE_APPSTORE_BASE64 }} | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/profile.mobileprovision"
+    - name: verify
+      run: security cms -D -i "$HOME/Library/MobileDevice/Provisioning Profiles/profile.mobileprovision"
     - name: Archive
       run: xcodebuild -scheme ghactions-test -project ghactions-test.xcodeproj -archivePath ghactions-test.xcarchive archive
