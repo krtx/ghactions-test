@@ -17,6 +17,16 @@ jobs:
       run: fastlane --version
     - name: test
       run: echo hoge > "$HOME/temp"
+    - name: test 2
+      run: ls "$HOME"
+    - name: test 3
+      run: |
+        mkdir -p $HOME/hoge
+        echo aaa > $HOME/hoge/fuga
+    - name: test 5
+      run: |
+        ls $HOME/hoge \
+        cat $HOME/hoge/fuga
     - name: Add Provisioning Profile
       run: |
         set -x \
