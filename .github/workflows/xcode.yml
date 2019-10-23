@@ -23,4 +23,4 @@ jobs:
     - name: verify
       run: security cms -D -i "$HOME/Library/MobileDevice/Provisioning Profiles/profile.mobileprovision"
     - name: Archive
-      run: xcodebuild -scheme ghactions-test -project ghactions-test.xcodeproj -archivePath ghactions-test.xcarchive archive
+      run: xcodebuild -allowProvisioningUpdates -scheme ghactions-test -project ghactions-test.xcodeproj -archivePath ghactions-test.xcarchive archive
