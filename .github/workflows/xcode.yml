@@ -19,7 +19,8 @@ jobs:
       run: |
         set -x
         mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
-        echo ${{ secrets.PROVISIONING_PROFILE_APPSTORE_BASE64 }} | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/profile.mobileprovision"
+        echo ${{ secrets.PROVISIONING_PROFILE_APPSTORE_BASE64 }} | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/distribution.mobileprovision"
+        echo ${{ secrets.PROVISIONING_PROFILE_DEVELOPMENT_BASE64 }} | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/development.mobileprovision"        
     - name: verify
       run: security cms -D -i "$HOME/Library/MobileDevice/Provisioning Profiles/profile.mobileprovision"
     - name: Archive
