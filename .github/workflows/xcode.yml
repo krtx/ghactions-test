@@ -13,6 +13,8 @@ jobs:
       run: sudo xcode-select -s '/Applications/Xcode_10.1.app/Contents/Developer'
     - name: Show Xcode version
       run: xcodebuild -version
+    - name: fastlane
+      run: fastlane --version
     - name: Add Provisioning Profile
       run: |
         set -x \
