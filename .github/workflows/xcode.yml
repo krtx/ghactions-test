@@ -18,6 +18,6 @@ jobs:
         mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles \
         touch ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision \
         ls -al ~/Library/MobileDevice/Provisioning\ Profiles \
-        echo {{ secrets.PROVISIONING_PROFILE_APPSTORE_BASE64 }} | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
+        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles && echo {{ secrets.PROVISIONING_PROFILE_APPSTORE_BASE64 }} | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
     - name: Archive
       run: xcodebuild -scheme ghactions-test -project ghactions-test.xcodeproj -archivePath ghactions-test.xcarchive archive
