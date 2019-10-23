@@ -15,8 +15,11 @@ jobs:
       run: xcodebuild -version
     - name: add cert
       run: |
-        echo ${{ secrets.IOS_DEVELOPMENT_CERT_BASE64 }} | base64 --decode > "$HOME/ios_development.cert"
-        security add-trusted-cert -d -r trustRoot -k $HOME/Library/Keychains/login.keychain $HOME/ios_development.cert
+        security create-keychain -p password build.keychain
+        security default-keychain -s build.keychain
+        security unlock-keychain -p password build.keychain
+        echo ${{ secrets.IOS_DEVELOPMENT_CERT_BASE64 }} | base64 --decode > $HOME/ios_development.cert
+        security add-certificate $HOME/ios_development.cert
     - name: Add Provisioning Profile
       run: |
         mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
