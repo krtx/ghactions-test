@@ -15,6 +15,8 @@ jobs:
       run: xcodebuild -version
     - name: Add Provisioning Profile
       run: |
-        mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles" && echo {{ secrets.PROVISIONING_PROFILE_APPSTORE_BASE64 }} | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/profile.mobileprovision"
+        set -x \
+        mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles" \
+        echo {{ secrets.PROVISIONING_PROFILE_APPSTORE_BASE64 }} | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/profile.mobileprovision"
     - name: Archive
       run: xcodebuild -scheme ghactions-test -project ghactions-test.xcodeproj -archivePath ghactions-test.xcarchive archive
