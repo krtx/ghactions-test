@@ -27,7 +27,6 @@ jobs:
         echo ${{ secrets.PROVISIONING_PROFILE_DISTRIBUTION_BASE64 }} | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/development.mobileprovision"
     - name: Archive
       run: |
-        security unlock-keychain -p password build.keychain
         xcodebuild -configuration Release -scheme ghactions-test -project ghactions-test.xcodeproj -archivePath ghactions-test.xcarchive archive
     - name: Export
       run: xcodebuild -exportArchive -archivePath ghactions-test.xcarchive -exportPath ghactions-test.ipa -exportOptionsPlist ExportOptions.plist
