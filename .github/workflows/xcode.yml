@@ -15,15 +15,19 @@ jobs:
       run: xcodebuild -version
     - name: Add certificate
       run: |
+        # keychain setup
         security create-keychain -p password build.keychain
         security default-keychain -s build.keychain
         security unlock-keychain -p password build.keychain
-        echo ${{ secrets.CERTIFICATE_DISTRIBUTION_P12_BASE64 }} | base64 --decode > $HOME/ios_distribution.p12
+        
+        # certificate setup
+        # echo ${{ secrets.CERTIFICATE_DISTRIBUTION_P12_BASE64 }} | base64 --decode > $HOME/ios_distribution.p12
         echo ${{ secrets.CERTIFICATE_DISTRIBUTION_BASE64 }} | base64 --decode > $HOME/ios_distribution.cer
-        security import $HOME/ios_distribution.cer -T /usr/bin/codesign
+        # security import $HOME/ios_distribution.cer -T /usr/bin/codesign
         security import $HOME/ios_distribution.p12 -T /usr/bin/codesign -P ""
+        
+        # keychain setup
         security set-key-partition-list -S apple-tool:,apple: -s -k password build.keychain
-        security list-keychains
     - name: Add Provisioning Profile
       run: |
         mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
