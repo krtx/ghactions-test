@@ -9,14 +9,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-
     - name: ruby
       run: sudo gem install jwt
-
-    - name: access api
+    - name: Set CFBundleVersion
       run: |
-        curl -v -H 'Authorization: Bearer '$(ruby jwt.rb "$(echo ${{ secrets.AUTH_KEY_BASE64 }})") https://api.appstoreconnect.apple.com/v1/apps
-
+        VERSION=$(curl -H 'Authorization: Bearer '$(ruby jwt.rb "$(echo ${{ secrets.AUTH_KEY_BASE64 }})") 'https://api.appstoreconnect.apple.com/v1/builds?filter\[app\]=1441535499' | jq -r '.data | sort_by(.attributes.uploadedDate) | reverse | map(.attributes) | first .version')
+        NEXT_VERSION=$(( VERSION + 1 ))
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEXT_VERSION" ghactions-test/Info.plist
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEXT_VERSION" ghactions-testTests/Info.plist
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEXT_VERSION" ghactions-testUITests/Info.plist
     - name: Select Xcode version
       run: sudo xcode-select -s '/Applications/Xcode_10.1.app/Contents/Developer'
     - name: Setup keychain
