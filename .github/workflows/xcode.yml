@@ -36,4 +36,4 @@ jobs:
     - name: Upload
       run: |
         ls -al
-        xcrun altool --upload-app -f ghactions-test.ipa -t ios -u akimonoiryou@me.com -p ${{ secrets.APPLE_API_KEY }}
+        xcrun altool --upload-app -f ghactions-test.ipa/ghactions-test.ipa -t ios -u akimonoiryou@me.com -p ${{ secrets.APPLE_API_KEY }}
