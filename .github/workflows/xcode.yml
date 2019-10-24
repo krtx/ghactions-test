@@ -34,4 +34,6 @@ jobs:
     - name: Export
       run: xcodebuild -exportArchive -archivePath ghactions-test.xcarchive -exportPath ghactions-test.ipa -exportOptionsPlist ExportOptions.plist
     - name: Upload
-      run: xcrun altool --upload-app -f ghactions-test.ipa -t ios -u akimonoiryou@me.com -p ${{ secrets.APPLE_API_KEY }}
+      run: |
+        ls -al
+        xcrun altool --upload-app -f ghactions-test.ipa -t ios -u akimonoiryou@me.com -p ${{ secrets.APPLE_API_KEY }}
