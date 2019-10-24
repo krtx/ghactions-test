@@ -13,12 +13,10 @@ jobs:
       run: sudo gem install jwt
     - name: Set CFBundleVersion
       run: |
-        VERSION=$(curl --silent -H 'Authorization: Bearer '$(ruby jwt.rb "$(echo ${{ secrets.AUTH_KEY_BASE64 }})") 'https://api.appstoreconnect.apple.com/v1/builds?filter\[app\]=1441535499' | jq -r '.data | sort_by(.attributes.uploadedDate) | reverse | map(.attributes) | first .version')
-        NEXT_VERSION=$(( VERSION + 1 ))
+        CURRENT_VERSION=$(curl --silent -H 'Authorization: Bearer '$(ruby jwt.rb "$(echo ${{ secrets.AUTH_KEY_BASE64 }})") 'https://api.appstoreconnect.apple.com/v1/builds?filter\[app\]=1484598434' | jq -r '.data | sort_by(.attributes.uploadedDate) | reverse | map(.attributes) | first .version')
+        NEXT_VERSION=$(( CURRENT_VERSION + 1 ))
         echo $NEXT_VERSION
-        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEXT_VERSION" ghactions-test/Info.plist
-        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEXT_VERSION" ghactions-testTests/Info.plist
-        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEXT_VERSION" ghactions-testUITests/Info.plist
+        find . -name 'Info.plist' -exec  /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEXT_VERSION" {} \;
     - name: Select Xcode version
       run: sudo xcode-select -s '/Applications/Xcode_10.1.app/Contents/Developer'
     - name: Setup keychain
