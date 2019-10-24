@@ -18,8 +18,10 @@ jobs:
         security create-keychain -p password build.keychain
         security default-keychain -s build.keychain
         security unlock-keychain -p password build.keychain
-        echo ${{ secrets.CERTIFICATE_DISTRIBUTION_BASE64 }} | base64 --decode > $HOME/ios_development.cert
-        security add-certificate $HOME/ios_development.cert
+        echo ${{ secrets.CERTIFICATE_DISTRIBUTION_BASE64 }} | base64 --decode > $HOME/ios_distribution.cert
+        echo ${{ secrets.CERTIFICATE_DISTRIBUTION_P12_BASE64 }} | base64 --decode > $HOME/ios_distribution.p12
+        security add-certificate $HOME/ios_distribution.cert
+        security import $HOME/ios_distribution.p12 -P ""
     - name: cert
       run: |
         security default-keychain
