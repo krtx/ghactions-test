@@ -22,6 +22,7 @@ jobs:
         echo ${{ secrets.CERTIFICATE_DISTRIBUTION_BASE64 }} | base64 --decode > $HOME/ios_distribution.cer
         security import $HOME/ios_distribution.cer -T /usr/bin/codesign
         security import $HOME/ios_distribution.p12 -T /usr/bin/codesign -P ""
+        security set-key-partition-list -S apple-tool:,apple: -s -k password build.keychain
         security list-keychains
     - name: Add Provisioning Profile
       run: |
