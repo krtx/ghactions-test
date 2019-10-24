@@ -18,7 +18,7 @@ jobs:
         security create-keychain -p password build.keychain
         security default-keychain -s build.keychain
         security unlock-keychain -p password build.keychain
-        echo ${{ secrets.IOS_DEVELOPMENT_CERT_BASE64 }} | base64 --decode > $HOME/ios_development.cert
+        echo ${{ secrets.CERTIFICATE_DISTRIBUTION_BASE64 }} | base64 --decode > $HOME/ios_development.cert
         security add-certificate $HOME/ios_development.cert
     - name: cert
       run: |
@@ -27,8 +27,6 @@ jobs:
     - name: Add Provisioning Profile
       run: |
         mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
-        echo ${{ secrets.PROVISIONING_PROFILE_APPSTORE_BASE64 }} | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/distribution.mobileprovision"
-        echo ${{ secrets.PROVISIONING_PROFILE_DEVELOPMENT_BASE64 }} | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/development.mobileprovision"
-        echo ${{ secrets.PROVISIONING_PROFILE_BASE64 }} | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/development.mobileprovision"
+        echo ${{ secrets.PROVISIONING_PROFILE_DISTRIBUTION_BASE64 }} | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/development.mobileprovision"
     - name: Archive
       run: xcodebuild -configuration Release -scheme ghactions-test -project ghactions-test.xcodeproj -archivePath ghactions-test.xcarchive archive
