@@ -13,8 +13,9 @@ jobs:
       run: sudo gem install jwt
     - name: Set CFBundleVersion
       run: |
-        VERSION=$(curl -H 'Authorization: Bearer '$(ruby jwt.rb "$(echo ${{ secrets.AUTH_KEY_BASE64 }})") 'https://api.appstoreconnect.apple.com/v1/builds?filter\[app\]=1441535499' | jq -r '.data | sort_by(.attributes.uploadedDate) | reverse | map(.attributes) | first .version')
+        VERSION=$(curl --silent -H 'Authorization: Bearer '$(ruby jwt.rb "$(echo ${{ secrets.AUTH_KEY_BASE64 }})") 'https://api.appstoreconnect.apple.com/v1/builds?filter\[app\]=1441535499' | jq -r '.data | sort_by(.attributes.uploadedDate) | reverse | map(.attributes) | first .version')
         NEXT_VERSION=$(( VERSION + 1 ))
+        echo $NEXT_VERSION
         /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEXT_VERSION" ghactions-test/Info.plist
         /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEXT_VERSION" ghactions-testTests/Info.plist
         /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEXT_VERSION" ghactions-testUITests/Info.plist
