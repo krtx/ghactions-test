@@ -21,8 +21,8 @@ jobs:
         security unlock-keychain -p password build.keychain
         
         # certificate setup
-        # echo ${{ secrets.CERTIFICATE_DISTRIBUTION_P12_BASE64 }} | base64 --decode > $HOME/ios_distribution.p12
-        echo ${{ secrets.CERTIFICATE_DISTRIBUTION_BASE64 }} | base64 --decode > $HOME/ios_distribution.cer
+        echo ${{ secrets.CERTIFICATE_DISTRIBUTION_P12_BASE64 }} | base64 --decode > $HOME/ios_distribution.p12
+        # echo ${{ secrets.CERTIFICATE_DISTRIBUTION_BASE64 }} | base64 --decode > $HOME/ios_distribution.cer
         # security import $HOME/ios_distribution.cer -T /usr/bin/codesign
         security import $HOME/ios_distribution.p12 -T /usr/bin/codesign -P ""
         
