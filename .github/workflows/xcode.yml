@@ -21,7 +21,7 @@ jobs:
         echo ${{ secrets.CERTIFICATE_DISTRIBUTION_BASE64 }} | base64 --decode > $HOME/ios_distribution.cert
         echo ${{ secrets.CERTIFICATE_DISTRIBUTION_P12_BASE64 }} | base64 --decode > $HOME/ios_distribution.p12
         security add-certificate $HOME/ios_distribution.cert
-        security import $HOME/ios_distribution.p12 -P ""
+        security import $HOME/ios_distribution.p12 -P "" -T /usr/bin/codesign
     - name: cert
       run: |
         security default-keychain
