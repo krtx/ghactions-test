@@ -18,16 +18,12 @@ jobs:
         # get certificate
         curl --silent -H "Authorization: Bearer $TOKEN" 'https://api.appstoreconnect.apple.com/v1/certificates?filter\[certificateType\]=IOS_DISTRIBUTION' |
           jq -r .data[0].attributes.certificateContent |
-          base64 --decode > $HOME/certificate.p12
-
-        cat $HOME/certificate.p12
+          base64 --decode > $HOME/certificate.cer
 
         # get provisioning profile
         curl --silent -H "Authorization: Bearer $TOKEN" 'https://api.appstoreconnect.apple.com/v1/profiles?filter\[name\]=ios+distribution+gheactions-test' |
           jq -r .data[0].attributes.profileContent |
           base64 --decode > $HOME/distribution.mobileprovision
-
-        cat $HOME/distribution.mobileprovision
 
         # set version
         CURRENT_VERSION=$(curl --silent -H "Authorization: Bearer $TOKEN" 'https://api.appstoreconnect.apple.com/v1/builds?filter\[app\]=1484598434' | jq -r '.data | sort_by(.attributes.uploadedDate) | reverse | map(.attributes) | first .version')
@@ -43,7 +39,7 @@ jobs:
         security unlock-keychain -p password build.keychain
     - name: Add certificate
       run: |
-        security import $HOME/certificate.p12 -T /usr/bin/codesign -P ""
+        security import $HOME/certificate.cer -T /usr/bin/codesign -P ""
     - name: Allow apple tools to access keychain
       run: |
         security set-key-partition-list -S apple-tool:,apple: -s -k password build.keychain
