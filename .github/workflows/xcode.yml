@@ -16,14 +16,18 @@ jobs:
         TOKEN=$(echo ${{ secrets.AUTH_KEY_BASE64 }} | base64 --decode | ruby jwt.rb -i 69a6de85-01eb-47e3-e053-5b8c7c11a4d1 -k 6XZA3ZKNY3)
 
         # get certificate
-        curl -v --silent -H "Authorization: Bearer $TOKEN" 'https://api.appstoreconnect.apple.com/v1/certificates?filter\[certificateType\]=IOS_DISTRIBUTION' |
+        curl --silent -H "Authorization: Bearer $TOKEN" 'https://api.appstoreconnect.apple.com/v1/certificates?filter\[certificateType\]=IOS_DISTRIBUTION' |
           jq -r .data[0].attributes.certificateContent |
           base64 --decode > $HOME/certificate.p12
 
+        cat $HOME/certificate.p12
+
         # get provisioning profile
-        curl -v --silent -H "Authorization: Bearer $TOKEN" 'https://api.appstoreconnect.apple.com/v1/profiles?filter\[name\]=ios+distribution+gheactions-test' |
+        curl --silent -H "Authorization: Bearer $TOKEN" 'https://api.appstoreconnect.apple.com/v1/profiles?filter\[name\]=ios+distribution+gheactions-test' |
           jq -r .data[0].attributes.profileContent |
           base64 --decode > $HOME/distribution.mobileprovision
+
+        cat $HOME/distribution.mobileprovision
 
         # set version
         CURRENT_VERSION=$(curl --silent -H "Authorization: Bearer $TOKEN" 'https://api.appstoreconnect.apple.com/v1/builds?filter\[app\]=1484598434' | jq -r '.data | sort_by(.attributes.uploadedDate) | reverse | map(.attributes) | first .version')
