@@ -13,7 +13,20 @@ jobs:
       run: sudo gem install jwt
     - name: Set CFBundleVersion
       run: |
-        CURRENT_VERSION=$(curl --silent -H 'Authorization: Bearer '$(ruby jwt.rb "$(echo ${{ secrets.AUTH_KEY_BASE64 }})") 'https://api.appstoreconnect.apple.com/v1/builds?filter\[app\]=1484598434' | jq -r '.data | sort_by(.attributes.uploadedDate) | reverse | map(.attributes) | first .version')
+        TOKEN=$(echo ${{ secrets.AUTH_KEY_BASE64 }} | base64 --decode | ruby jwt.rb -i 69a6de85-01eb-47e3-e053-5b8c7c11a4d1 -k 6XZA3ZKNY3)
+
+        # get certificate
+        curl --silent -H "Authorization: Bearer $TOKEN" 'https://api.appstoreconnect.apple.com/v1/certificates?filter\[certificateType\]=IOS_DISTRIBUTION' |
+          jq -r .data[0].attributes.certificateContent |
+          base64 --decode > $HOME/certificate.p12
+
+        # get provisioning profile
+        curl --silent -H "Authorization: Bearer $TOKEN" 'https://api.appstoreconnect.apple.com/v1/profiles?filter\[name\]=ios+distribution+gheactions-test' |
+          jq -r .data[0].attributes.profileContent |
+          base64 --decode > $HOME/distribution.mobileprovision
+
+        # set version
+        CURRENT_VERSION=$(curl --silent -H "Authorization: Bearer $TOKEN" 'https://api.appstoreconnect.apple.com/v1/builds?filter\[app\]=1484598434' | jq -r '.data | sort_by(.attributes.uploadedDate) | reverse | map(.attributes) | first .version')
         NEXT_VERSION=$(( CURRENT_VERSION + 1 ))
         echo $NEXT_VERSION
         find . -name 'Info.plist' -exec  /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEXT_VERSION" {} \;
@@ -26,7 +39,6 @@ jobs:
         security unlock-keychain -p password build.keychain
     - name: Add certificate
       run: |
-        echo ${{ secrets.CERTIFICATE_BASE64 }} | base64 --decode > $HOME/certificate.p12
         security import $HOME/certificate.p12 -T /usr/bin/codesign -P ""
     - name: Allow apple tools to access keychain
       run: |
@@ -34,7 +46,7 @@ jobs:
     - name: Add Provisioning Profile
       run: |
         mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
-        echo ${{ secrets.PROVISIONING_PROFILE_BASE64 }} | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/development.mobileprovision"
+        cp $HOME/distribution.mobileprovision "$HOME/Library/MobileDevice/Provisioning Profiles/"
     - name: Archive
       run: xcodebuild -configuration Release -scheme ghactions-test -project ghactions-test.xcodeproj -archivePath ghactions-test.xcarchive archive
     - name: Export

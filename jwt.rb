@@ -1,20 +1,28 @@
 require 'jwt'
 require 'base64'
+require 'optparse'
 
-private_key = Base64.decode64(ARGV[0])
+params = {}
+
+opt = OptionParser.new
+opt.on('-i val', '--iss') { |v| params[:iss] = v }
+opt.on('-k val', '--kid') { |v| params[:kid] = v }
+opt.parse!
+
+private_key = STDIN.readlines.join
 key = OpenSSL::PKey::EC.new(private_key)
 
 payload = {
-  iss: "69a6de85-01eb-47e3-e053-5b8c7c11a4d1",
+  iss: params[:iss],
   exp: Time.now.utc.to_i + 10 * 60,
-  aud: "appstoreconnect-v1"
+  aud: 'appstoreconnect-v1'
 }
 
 header_fields = {
-  "kid": "6XZA3ZKNY3",
-  "typ": "JWT"
+  "kid": params[:kid],
+  "typ": 'JWT'
 }
 
-token = JWT.encode payload, key, "ES256", header_fields=header_fields
+token = JWT.encode(payload, key, 'ES256', header_fields=header_fields)
 
 puts token
